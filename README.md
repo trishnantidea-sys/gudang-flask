@@ -17,4 +17,5 @@ pip install -r requirement.txt
 Sesuaikan isi dari file .env dengan konfigurasi kamu
 
 ### 3. Jalankan aplikasi
+```bash
 python main.py
