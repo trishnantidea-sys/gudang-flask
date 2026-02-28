@@ -7,14 +7,11 @@ Pastikan kamu sudah menginstal **Python 3.x** di komputer kamu.
 
 ## ⚙️ Langkah Instalasi
 
-### 1. Persiapan Lingkungan (Opsional tapi Disarankan)
-Buat virtual environment agar library tidak bentrok dengan proyek lain:
+### 1. Persiapan Lingkungan
+Install dependencies dari file requirement.txt
 ```bash
-python -m venv venv
-# Aktifkan di Windows:
-venv\Scripts\activate
-# Aktifkan di macOS/Linux:
-source venv/bin/activate
+pip install -r requirement.txt
+```
 
 ### 2. Copy file .env.example dan ubh nama file menjadi .env
 Sesuaikan isi dari file .env dengan konfigurasi kamu
