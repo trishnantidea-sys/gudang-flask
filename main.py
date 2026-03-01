@@ -127,4 +127,55 @@ def registrasi():
         ]
     }), 201
 
+@app.route('/paket', methods=['GET'])
+def get_paket():
+    query_select = "SELECT * FROM paket ORDER BY created_date DESC"
+    cursor.execute(query_select)
+    rows = cursor.fetchall()
+
+    data = []
+    for row in rows:
+        if row[7] == "elec":
+            cat = "Elektronik"
+        elif row[7] == "doc":
+            cat = "Dokumen"
+        elif row[7] == "sparepart":
+            cat = "Sparepart"
+        elif row[7] == "textil":
+            cat = "Tekstil"
+
+        if row[10] == "reg":
+            pengiriman = "D&L Reguler"
+        elif row[10] == "eco":
+            pengiriman = "D&L Eco (Ekonomis)"
+        elif row[10] == "kilat":
+            pengiriman = "D&L Super (Kilat)"
+        elif row[10] == "kargo":
+            pengiriman = "D&L Cargo"
+
+        data.append({
+            "id":row[0],
+            "resi":row[1],
+            "pengirim":row[2],
+            "no_hp_pengirim":row[3],
+            "penerima":row[4],
+            "no_hp_penerima":row[5],
+            "alamat_tujuan":row[6],
+            "kategori":cat,
+            "berat":row[8],
+            "tanggal_pengiriman":row[9],
+            "jenis_pengiriman":pengiriman,
+            "estimasi":row[11],
+            "tarif":row[12],
+            "created_date":row[13],
+            "created_by":row[14],
+        })
+
+    return jsonify({
+        "message" : "Success",
+        "status" : 200,
+        "data" : data
+    })
+
+
 app.run(debug=True)

@@ -38,8 +38,10 @@ def init_db():
         pengirim TEXT, no_hp_pengirim TEXT,
         penerima TEXT, no_hp_penerima TEXT,
         alamat_tujuan TEXT, kategori TEXT,
-        berat REAL, tanggal_pengiriman TEXT,
-        jenis_pengiriman TEXT, estimasi TEXT, tarif INTEGER
+        berat REAL, tanggal_pengiriman DATETIME,
+        jenis_pengiriman TEXT, estimasi DATETIME, 
+        tarif INTEGER, created_date DATETIME, 
+        created_by INTEGER
     )''')
 
     conn.commit()
