@@ -3,6 +3,15 @@
 import mysql.connector
 import sqlite3
 
+# def get_conection():
+    # conn = mysql.connector.connect(
+    #     host="localhost",
+    #     user="DB_Admin",
+    #     password="CRUDsql",
+    #     database="Tugas_Project"
+    # )
+    # return conn
+
 def get_conection():
     conn = mysql.connector.connect(**{
         "user": os.getenv('DB_USER'),
@@ -21,7 +30,7 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute('''CREATE TABLE IF NOT EXIST users (
+    cursor.execute('''CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         userid TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,

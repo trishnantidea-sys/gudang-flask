@@ -84,8 +84,8 @@ def registrasi():
     password = data.get("password")
     password_hash = hashlib.md5(password.encode()).hexdigest()
 
-    query_check = f"SELECT id FROM users WHERE username='{username}'"
-    cursor.execute(query_check)
+    query_check = f"SELECT id FROM users WHERE username=%s"
+    cursor.execute(query_check, (username,))
     existing = cursor.fetchone()
 
     if existing:
