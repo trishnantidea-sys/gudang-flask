@@ -1,27 +1,27 @@
 # koneksi + buat tabel SQLite otomatis
 
 import mysql.connector
-
-def get_conection():
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="DB_Admin",
-        password="CRUDsql",
-        database="Tugas_Project"
-    )
-    return conn
-
 import sqlite3
 
+def get_conection():
+    conn = mysql.connector.connect(**{
+        "user": os.getenv('DB_USER'),
+        "password": os.getenv('DB_PASSWORD'),
+        "host": os.getenv('DB_HOST'),
+        "database": os.getenv('DB_SCHEMA'),
+    })
+
+    return conn
+
 def get_connection():
-    conn = sqlite3.connect("Tugas_Project.db")
+    conn = sqlite3.connect("db_gudang_ekspedisi.db")
     return conn
 
 def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute('''CREATE TABLE IF NOT EXIST user (
+    cursor.execute('''CREATE TABLE IF NOT EXIST users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         userid TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
