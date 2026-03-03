@@ -221,4 +221,43 @@ def registrasi():
 #     return render_template("form_paket.html", mode="tambah", paket=None)
 
 
+# @app.route("/paket/edit/<int:id>", methods=["GET", "POST"])
+# def edit_paket(id):
+#     if "user_id" not in session:
+#         return redirect(url_for("login"))
+
+#     conn = get_connection()
+#     cur = conn.cursor()
+
+#     if request.method == "POST":
+#         pengirim         = request.form["pengirim"].strip()
+#         no_hp_pengirim   = request.form["no_hp_pengirim"].strip()
+#         penerima         = request.form["penerima"].strip()
+#         no_hp_penerima   = request.form["no_hp_penerima"].strip()
+#         alamat_tujuan    = request.form["alamat_tujuan"].strip()
+#         kategori         = request.form["kategori"]
+#         berat            = float(request.form["berat"])
+#         tgl_pengiriman   = request.form["tanggal_pengiriman"]
+#         jenis_pengiriman = request.form["jenis_pengiriman"]
+#         estimasi         = estimasi_map(jenis_pengiriman)
+#         tarif            = hitung_tarif(berat, jenis_pengiriman)
+
+#         cur.execute('''
+#             UPDATE paket SET pengirim=?, no_hp_pengirim=?, penerima=?, no_hp_penerima=?,
+#             alamat_tujuan=?, kategori=?, berat=?, tanggal_pengiriman=?,
+#             jenis_pengiriman=?, estimasi=?, tarif=?
+#             WHERE id=?
+#         ''', (pengirim, no_hp_pengirim, penerima, no_hp_penerima,
+#               alamat_tujuan, kategori, berat, tgl_pengiriman,
+#               jenis_pengiriman, estimasi, tarif, id))
+#         conn.commit()
+#         conn.close()
+#         flash("Data paket berhasil diupdate!", "success")
+#         return redirect(url_for("dashboard"))
+
+#     cur.execute("SELECT * FROM paket WHERE id=?", (id,))
+#     paket = cur.fetchone()
+#     conn.close()
+#     return render_template("form_paket.html", mode="edit", paket=paket)
+
 app.run(debug=True)
