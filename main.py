@@ -155,6 +155,76 @@ def registrasi():
         ]
     }), 201
 
+## authentication
+# @app.route("/")
+# def index():
+#     return redirect("/login")
+
+# @app.route("/login", methods=["GET", "POST"])
+# def login():
+#     if "user_id" in session:
+#         return redirect(url_for("dashboard"))
+
+#     if request.method == "POST":
+#         userid = request.form["userid"].strip()
+#         password = request.form["password"].strip()
+
+#         conn = get_connection()
+#         cur = conn.cursor()
+#         cur.execute("SELECT * FROM users WHERE userid=? AND password=?", (userid, password))
+#         user = cur.fetchone()
+#         conn.close()
+
+#         if user:
+#             session["user_id"] = user["id"]
+#             session["userid"] = user["userid"]
+#             session["nama"] = user["nama"]
+#             session["pekerjaan"] = user["pekerjaan"]
+#             return redirect(url_for("dashboard"))
+#         else:
+#             flash("User ID atau Password salah.", "error")
+    
+#     return render_template("login.html")
+
+
+# @app.route("/register", methods=["GET", "POST"])
+# def register():
+#     if request.method == "POST":
+#         userid   = request.form["userid"].strip()
+#         password = request.form["password"].strip()
+#         email    = request.form["email"].strip()
+#         nama     = request.form["nama"].strip()
+#         gender   = request.form["gender"]
+#         usia     = int(request.form["usia"])
+#         pekerjaan= request.form["pekerjaan"].strip()
+#         hobi     = request.form["hobi"].strip()
+#         kota     = request.form["kota"].strip()
+#         rt       = int(request.form["rt"])
+#         rw       = int(request.form["rw"])
+#         zipcode  = int(request.form["zipcode"])
+#         lat      = float(request.form["lat"])
+#         longitude= float(request.form["longitude"])
+#         nohp     = int(request.form["nohp"])
+
+#         conn = get_connection()
+#         cur = conn.cursor()
+#         try:
+#             cur.execute('''
+#                 INSERT INTO users (userid, password, email, nama, gender, usia, pekerjaan,
+#                 hobi, kota, rt, rw, zipcode, lat, longitude, nohp)
+#                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+#             ''', (userid, password, email, nama, gender, usia, pekerjaan,
+#                   hobi, kota, rt, rw, zipcode, lat, longitude, nohp))
+#             conn.commit()
+#             flash("Registrasi berhasil! Silakan login.", "success")
+#             return redirect(url_for("login"))
+#         except Exception as e:
+#             flash(f"User ID atau Email sudah terdaftar.", "error")
+#         finally:
+#             conn.close()
+
+#     return render_template("register.html")
+
 # @app.route("/logout")
 # def logout():
 #     session.clear()
@@ -260,4 +330,31 @@ def registrasi():
 #     conn.close()
 #     return render_template("form_paket.html", mode="edit", paket=paket)
 
-app.run(debug=True)
+
+# @app.route("/paket/hapus/<int:id>")
+# def hapus_paket(id):
+#     if "user_id" not in session:
+#         return redirect(url_for("login"))
+
+#     conn = get_connection()
+#     cur = conn.cursor()
+#     cur.execute("DELETE FROM paket WHERE id=?", (id,))
+#     conn.commit()
+#     conn.close()
+#     flash("Data paket berhasil dihapus.", "success")
+#     return redirect(url_for("dashboard"))
+
+# @app.route("/paket/detail/<int:id>")
+# def detail_paket(id):
+#     if "user_id" not in session:
+#         return redirect(url_for("login"))
+
+#     conn = get_connection()
+#     cur = conn.cursor()
+#     cur.execute("SELECT * FROM paket WHERE id=?", (id,))
+#     paket = cur.fetchone()
+#     conn.close()
+#     return render_template("detail_paket.html", paket=paket)
+
+if __name__ == "__main__":
+    app.run(debug=True)
