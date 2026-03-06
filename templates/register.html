@@ -31,3 +31,26 @@
 <div class="box">
   <div class="logo">D&L Express</div>
   <div class="sub">Buat Akun Baru</div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST">
+    <div class="section-title">Akun</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>User ID</label>
+        <input type="text" name="userid" placeholder="min. 6 karakter, huruf+angka" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Huruf besar+kecil+angka+simbol" required>
+      </div>
+      <div class="form-group full">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="contoh@email.com" required>
+      </div>
+    </div>
