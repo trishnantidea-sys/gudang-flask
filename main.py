@@ -23,7 +23,9 @@ conn = mysql.connector.connect(**{
 })
 cursor = conn.cursor()
 
-## helper
+# ==============
+## Helper
+# ==============
 # def hitung_tarif(berat, jenis):
 #     tarif_map = {
 #         "D&L Reguler": 10000,
@@ -155,7 +157,9 @@ def registrasi():
         ]
     }), 201
 
-## authentication
+# ==================
+## Authentication
+# ==================
 # @app.route("/")
 # def index():
 #     return redirect("/login")
@@ -230,7 +234,9 @@ def registrasi():
 #     session.clear()
 #     return redirect(url_for("login"))
 
-## dashboard
+# ==============
+## Dashboard
+# ==============
 # @app.route("/dashboard")
 # def dashboard():
 #     if "user_id" not in session:
@@ -251,7 +257,9 @@ def registrasi():
 #                            total=total,
 #                            total_tarif=total_tarif)
 
+# ==============
 ## CRUD Paket
+# ==============
 # @app.route("/paket/tambah", methods=["GET", "POST"])
 # def tambah_paket():
 #     if "user_id" not in session:
@@ -355,6 +363,7 @@ def registrasi():
 #     paket = cur.fetchone()
 #     conn.close()
 #     return render_template("detail_paket.html", paket=paket)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
