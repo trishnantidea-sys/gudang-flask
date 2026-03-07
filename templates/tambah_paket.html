@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tambah Paket Baru</title>
+</head>
+<body>
+    <h1>Input Data Paket Baru</h1>
+    <form action="/tambah-paket" method="POST">
+        <table border="0">
+            <tr>
+                <td>Nomor Resi</td>
+                <td>: <input type="text" name="resi" required></td>
+            </tr>
+            <tr>
+                <td>Nama Pengirim</td>
+                <td>: <input type="text" name="pengirim" required></td>
+            </tr>
+            <tr>
+                <td>No HP Pengirim</td>
+                <td>: <input type="text" name="no_hp_pengirim"></td>
+            </tr>
+            <tr>
+                <td>Nama Penerima</td>
+                <td>: <input type="text" name="penerima" required></td>
+            </tr>
+            <tr>
+                <td>No HP Penerima</td>
+                <td>: <input type="text" name="no_hp_penerima"></td>
+            </tr>
+            <tr>
+                <td>Alamat Tujuan</td>
+                <td>: <textarea name="alamat_tujuan" rows="3"></textarea></td>
+            </tr>
+            <tr>
+                <td>Kategori</td>
+                <td>: 
+                    <select name="kategori">
+                        <option value="Alat Olahraga">Alat Olahraga</option>
+                        <option value="Kebutuhan Rumah Tangga">Kebutuhan Rumah Tangga</option>
+                        <option value="ATK">ATK (Alat Tulis Kantor)</option>
+                        <option value="Dokumen">Dokumen</option>
+                        <option value="Elektronik">Elektronik</option>
+                        <option value="Pakaian/Tekstil">Pakaian/Tekstil</option>
+                        <option value="Sparepart">Sparepart</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Berat (Kg)</td>
+                <td>: <input type="number" step="0.1" name="berat"></td>
+            </tr>
+            <tr>
+                <td>Tanggal Kirim</td>
+                <td>: <input type="date" name="tanggal_pengiriman"></td>
+            </tr>
+            <tr>
+                <td>Jenis Pengiriman</td>
+                <td>: 
+                    <input type="radio" name="jenis_pengiriman" value="Reguler" checked> Reguler
+                    <input type="radio" name="jenis_pengiriman" value="Eco"> Eco
+                    <input type="radio" name="jenis_pengiriman" value="Kilat"> Kilat
+                    <input type="radio" name="jenis_pengiriman" value="Kargo"> Kargo
+                </td>
+            </tr>
+        </table>
+        <br>
+        <button type="submit">Simpan Paket</button>
+        <a href="/paket-page">Batal</a>
+    </form>
+</body>
+</html>

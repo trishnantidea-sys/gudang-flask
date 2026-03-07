@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daftar Akun Lengkap</title>
+</head>
+<body>
+    <h1>Pendaftaran Akun Baru</h1>
+    <form action="/register" method="POST">
+        <table border="0">
+            <tr>
+                <td>Username</td>
+                <td>: <input type="text" name="username" required></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td>: <input type="password" name="password" required></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>: <input type="email" name="email" required></td>
+            </tr>
+            <tr>
+                <td>Nama Lengkap</td>
+                <td>: <input type="text" name="nama" required></td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td>: 
+                    <select name="gender" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Usia</td>
+                <td>: <input type="number" name="usia" required></td>
+            </tr>
+            <tr>
+                <td>Pekerjaan</td>
+                <td>: <input type="text" name="pekerjaan"></td>
+            </tr>
+            <tr>
+                <td>Hobi</td>
+                <td>: <input type="text" name="hobi"></td>
+            </tr>
+            <tr>
+                <td>Kota</td>
+                <td>: <input type="text" name="kota"></td>
+            </tr>
+            <tr>
+                <td>RT / RW</td>
+                <td>: <input type="number" name="rt" style="width: 50px;"> / <input type="number" name="rw" style="width: 50px;"></td>
+            </tr>
+            <tr>
+                <td>Kode Pos (Zipcode)</td>
+                <td>: <input type="number" name="zipcode"></td>
+            </tr>
+            <tr>
+                <td>Nomor HP (NoHP)</td>
+                <td>: <input type="text" name="nohp"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr></td>
+            </tr>
+            <tr>
+                <td>Latitude</td>
+                <td>: <input type="text" name="lat" placeholder="0.0"></td>
+            </tr>
+            <tr>
+                <td>Longitude</td>
+                <td>: <input type="text" name="longitude" placeholder="0.0"></td>
+            </tr>
+        </table>
+        <br>
+        <button type="submit">Simpan & Daftar</button>
+    </form>
+
+    <p><a href="/login-page">Kembali ke Login</a></p>
+</body>
+</html>
