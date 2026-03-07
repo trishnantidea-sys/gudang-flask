@@ -1,181 +1,250 @@
-from flask import Flask, jsonify, request
-import mysql.connector
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 import hashlib
-from dotenv import load_dotenv
-import os
+import datetime
+from db_sqlite import get_connection, init_db
 
 app = Flask(__name__)
 
-# Load environment variables from the .env file (if present)
-load_dotenv()
-
-conn = mysql.connector.connect(**{
-    "user": os.getenv('DB_USER'),
-    "password": os.getenv('DB_PASSWORD'),
-    "host": os.getenv('DB_HOST'),
-    "database": os.getenv('DB_SCHEMA'),
-})
-cursor = conn.cursor()
+# Initialize SQLite DB (Create tables if they don't exist)
+init_db()
 
 @app.route('/')
 def root():
-    response = {
-        "message" : "gudang-flask API",
-        "status" : 200,
-        "data" : []
-    }
+    return render_template('login.html')
 
-    return jsonify(response)
+@app.route('/login-page')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/register-page')
+def register_page():
+    return render_template('register.html')
+
 
 @app.route('/login', methods=['POST'])
 def login():
-    # ambil JSON dari body POST
-    data = request.get_json()
-
-    email = data.get("email")
-    password = data.get("password")
+    # Ambil data dari form HTML
+    email = request.form.get("email")
+    password = request.form.get("password")
 
     password_hash = hashlib.md5(password.encode()).hexdigest()
 
-    query_check = "SELECT id, nama FROM users WHERE email=%s AND password=%s"
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query_check = "SELECT id, nama FROM users WHERE email=? AND password=?"
     cursor.execute(query_check, (email, password_hash))
     row = cursor.fetchone()
+    conn.close()
 
-    data = []
     if row is not None:
-        id, nama = row
-
-        message = "Success"
-        status_code = 200
-        data.append({
-            "id": id,
-            "email": email,
-            "nama": nama
-        })
+        # Jika berhasil, pindah ke halaman paket
+        return redirect(url_for('paket_page'))
     else:
-        message = "Unauthorized"
-        status_code = 401
-    
-    return jsonify({
-        "message" : message,
-        "status" : status_code,
-        "data" : data
-    })
+        # Jika gagal, tampilkan pesan sederhana
+        return "Email atau password salah! <a href='/login-page'>Kembali</a>"
 
 @app.route('/register', methods=['POST'])
 def registrasi():
+    # Ambil data dari form HTML sesuai field di DB
+    username = request.form.get("username")
+    password = request.form.get("password")
+    email = request.form.get("email")
+    nama = request.form.get("nama")
+    gender = request.form.get("gender")
+    usia = request.form.get("usia")
+    pekerjaan = request.form.get("pekerjaan")
+    hobi = request.form.get("hobi")
+    kota = request.form.get("kota")
+    rt = request.form.get("rt")
+    rw = request.form.get("rw")
+    zipcode = request.form.get("zipcode")
+    lat = request.form.get("lat")
+    longitude = request.form.get("longitude")
+    nohp = request.form.get("nohp")
 
-    data = request.json
-    username = data.get("username")
-    email = data.get("email")
-    nama = data.get("nama")
-    gender=data.get("gender")
-    usia=data.get("usia")
-    pekerjaan=data.get("pekerjaan")
-    hobi=data.get("hobi")
-    kota=data.get("kota")
-    rt=data.get("rt")
-    rw=data.get("rw")
-    kode_pos=data.get("kode_pos")
-    longitude=data.get("longitude")
-    latitude=data.get("latitude")
-    no_hp=data.get("no_hp")
-
-    password = data.get("password")
     password_hash = hashlib.md5(password.encode()).hexdigest()
 
-    query_check = f"SELECT id FROM users WHERE username='{username}'"
-    cursor.execute(query_check)
-    existing = cursor.fetchone()
+    conn = get_connection()
+    cursor = conn.cursor()
 
-    if existing:
-        return jsonify({
-            "message": "Username sudah ada",
-            "status": 409,
-            "data": []
-        }), 409
+    # Cek apakah username sudah ada
+    query_check_user = "SELECT id FROM users WHERE username=?"
+    cursor.execute(query_check_user, (username,))
+    if cursor.fetchone():
+        conn.close()
+        return "Username sudah ada! <a href='/register-page'>Kembali</a>"
 
-    query_check = f"SELECT id FROM users WHERE email='{email}'"
-    cursor.execute(query_check)
-    existing = cursor.fetchone()
+    # Cek apakah email sudah ada
+    query_check_email = "SELECT id FROM users WHERE email=?"
+    cursor.execute(query_check_email, (email,))
+    if cursor.fetchone():
+        conn.close()
+        return "Email sudah ada! <a href='/register-page'>Kembali</a>"
 
-    if existing:
-        return jsonify({
-            "message": "Email sudah ada",
-            "status": 409,
-            "data": []
-        }), 409
-
-    query_insert = f"""
-        INSERT INTO users (username, password, email, nama, gender, usia, pekerjaan, hobi, kota, rt, rw, kode_pos, longitude, latitude, no_hp)
-        VALUES ('{username}', '{password_hash}', '{email}', '{nama}', '{gender}', {usia}, '{pekerjaan}', '{hobi}', '{kota}', {rt}, {rw}, {kode_pos}, {longitude}, {latitude}, '{no_hp}')
+    # Simpan data baru (Urutan sesuai gambar DB)
+    query_insert = """
+        INSERT INTO users (username, password, email, nama, gender, usia, pekerjaan, hobi, kota, rt, rw, zipcode, lat, longitude, nohp)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
-
-    print(query_insert)
-
-    cursor.execute(query_insert)
+    
+    # Konversi tipe data agar sesuai DB (INTEGER untuk rt/rw/usia, REAL untuk lat/long)
+    cursor.execute(query_insert, (
+        username, 
+        password_hash, 
+        email, 
+        nama, 
+        gender, 
+        int(usia) if usia else 0, 
+        pekerjaan, 
+        hobi, 
+        kota, 
+        int(rt) if rt else 0, 
+        int(rw) if rw else 0, 
+        int(zipcode) if zipcode else 0, 
+        float(lat) if lat else 0.0, 
+        float(longitude) if longitude else 0.0, 
+        nohp
+    ))
+    
     conn.commit()
+    conn.close()
 
-    return jsonify({
-        "message": "Registrasi berhasil",
-        "status": 201,
-        "data": [
-            {
-                "username":username,
-                "email":email
-            }
-        ]
-    }), 201
+    return "Registrasi berhasil! <a href='/login-page'>Silakan Login</a>"
 
 @app.route('/paket', methods=['GET'])
 def get_paket():
-    query_select = "SELECT * FROM paket ORDER BY created_date DESC"
+    conn = get_connection()
+    cursor = conn.cursor()
+    query_select = "SELECT * FROM paket ORDER BY id DESC"
     cursor.execute(query_select)
     rows = cursor.fetchall()
+    conn.close()
+    return jsonify(rows)
 
-    data = []
-    for row in rows:
-        if row[7] == "elec":
-            cat = "Elektronik"
-        elif row[7] == "doc":
-            cat = "Dokumen"
-        elif row[7] == "sparepart":
-            cat = "Sparepart"
-        elif row[7] == "textil":
-            cat = "Tekstil"
+@app.route('/paket-page')
+def paket_page():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM paket ORDER BY id DESC")
+    daftar_paket = cursor.fetchall()
+    conn.close()
+    return render_template('paket.html', paket=daftar_paket)
 
-        if row[10] == "reg":
-            pengiriman = "D&L Reguler"
-        elif row[10] == "eco":
-            pengiriman = "D&L Eco (Ekonomis)"
-        elif row[10] == "kilat":
-            pengiriman = "D&L Super (Kilat)"
-        elif row[10] == "kargo":
-            pengiriman = "D&L Cargo"
+@app.route('/tambah-paket-page')
+def tambah_paket_page():
+    return render_template('tambah_paket.html')
 
-        data.append({
-            "id":row[0],
-            "resi":row[1],
-            "pengirim":row[2],
-            "no_hp_pengirim":row[3],
-            "penerima":row[4],
-            "no_hp_penerima":row[5],
-            "alamat_tujuan":row[6],
-            "kategori":cat,
-            "berat":row[8],
-            "tanggal_pengiriman":row[9],
-            "jenis_pengiriman":pengiriman,
-            "estimasi":row[11],
-            "tarif":row[12],
-            "created_date":row[13],
-            "created_by":row[14],
-        })
+@app.route('/tambah-paket', methods=['POST'])
+def tambah_paket():
+    resi = request.form.get("resi")
+    pengirim = request.form.get("pengirim")
+    no_hp_pengirim = request.form.get("no_hp_pengirim")
+    penerima = request.form.get("penerima")
+    no_hp_penerima = request.form.get("no_hp_penerima")
+    alamat = request.form.get("alamat_tujuan")
+    kategori = request.form.get("kategori")
+    berat = request.form.get("berat")
+    tanggal = request.form.get("tanggal_pengiriman")
+    jenis = request.form.get("jenis_pengiriman")
+    
+    # Perhitungan Otomatis
+    berat_val = float(berat) if berat else 0
+    if jenis == 'Reguler':
+        tarif = int(berat_val * 10000)
+        days = 5
+    elif jenis == 'Eco':
+        tarif = int(berat_val * 7000)
+        days = 7
+    elif jenis == 'Kilat':
+        tarif = int(berat_val * 15000)
+        days = 2
+    elif jenis == 'Kargo':
+        tarif = int(berat_val * 8000)
+        days = 7
+    else:
+        tarif = 0
+        days = 0
 
-    return jsonify({
-        "message" : "Success",
-        "status" : 200,
-        "data" : data
-    })
+    estimasi = ""
+    if tanggal:
+        dt_kirim = datetime.datetime.strptime(tanggal, '%Y-%m-%d')
+        estimasi = dt_kirim + datetime.timedelta(days=days)
 
+    created_date = datetime.datetime.now()
 
-app.run(debug=True)
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """INSERT INTO paket 
+               (resi, pengirim, no_hp_pengirim, penerima, no_hp_penerima, alamat_tujuan, kategori, berat, tanggal_pengiriman, jenis_pengiriman, estimasi, tarif, created_date)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+    cursor.execute(query, (resi, pengirim, no_hp_pengirim, penerima, no_hp_penerima, alamat, kategori, berat_val, tanggal, jenis, estimasi, tarif, created_date))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('paket_page'))
+
+@app.route('/edit-paket-page/<int:id>')
+def edit_paket_page(id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM paket WHERE id=?", (id,))
+    data = cursor.fetchone()
+    conn.close()
+    return render_template('edit_paket.html', data=data)
+
+@app.route('/edit-paket/<int:id>', methods=['POST'])
+def edit_paket(id):
+    resi = request.form.get("resi")
+    pengirim = request.form.get("pengirim")
+    no_hp_pengirim = request.form.get("no_hp_pengirim")
+    penerima = request.form.get("penerima")
+    no_hp_penerima = request.form.get("no_hp_penerima")
+    alamat = request.form.get("alamat_tujuan")
+    kategori = request.form.get("kategori")
+    berat = request.form.get("berat")
+    tanggal = request.form.get("tanggal_pengiriman")
+    jenis = request.form.get("jenis_pengiriman")
+
+    # Perhitungan Otomatis
+    berat_val = float(berat) if berat else 0
+    if jenis == 'Reguler':
+        tarif = int(berat_val * 10000)
+        days = 5
+    elif jenis == 'Eco':
+        tarif = int(berat_val * 7000)
+        days = 7
+    elif jenis == 'Kilat':
+        tarif = int(berat_val * 15000)
+        days = 2
+    elif jenis == 'Kargo':
+        tarif = int(berat_val * 8000)
+        days = 7
+    else:
+        tarif = 0
+        days = 0
+
+    estimasi = ""
+    if tanggal:
+        dt_kirim = datetime.datetime.strptime(tanggal, '%Y-%m-%d')
+        estimasi = dt_kirim + datetime.timedelta(days=days)
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """UPDATE paket SET 
+               resi=?, pengirim=?, no_hp_pengirim=?, penerima=?, no_hp_penerima=?, alamat_tujuan=?, kategori=?, berat=?, tanggal_pengiriman=?, jenis_pengiriman=?, estimasi=?, tarif=?
+               WHERE id=?"""
+    cursor.execute(query, (resi, pengirim, no_hp_pengirim, penerima, no_hp_penerima, alamat, kategori, berat_val, tanggal, jenis, estimasi, tarif, id))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('paket_page'))
+
+@app.route('/hapus-paket/<int:id>')
+def hapus_paket(id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM paket WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('paket_page'))
+
+app.run(debug=True, port=5001)

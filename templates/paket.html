@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daftar Paket - Gudang Ekspedisi</title>
+</head>
+<body>
+    <h1>Daftar Paket Gudang</h1>
+    <p><a href="/tambah-paket-page"><b>+ Tambah Paket Baru</b></a></p>
+    <hr>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <!-- <th>ID</th> -->
+            <th>No Resi</th>
+            <th>Pengirim</th>
+            <th>Penerima</th>
+            <th>Kategori</th>
+            <th>Tarif</th>
+            <th>Aksi</th>
+        </tr>
+        {% for p in paket %}
+        <tr>
+            <!-- <td>{{ p[0] }}</td> -->
+            <td>{{ p[1] }}</td>
+            <td>{{ p[2] }}</td>
+            <td>{{ p[4] }}</td>
+            <td>{{ p[7] }}</td>
+            <td>Rp {{ p[12] }}</td>
+            <td>
+                <a href="/edit-paket-page/{{ p[0] }}">Edit</a> | 
+                <a href="/hapus-paket/{{ p[0] }}" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <p><a href="/login-page">Keluar (Logout)</a></p>
+</body>
+</html>
