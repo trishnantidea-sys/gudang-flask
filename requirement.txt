@@ -1,3 +1,4 @@
-python-dotenv
-flask
-mysql-connector-python
+Flask
+Flask-SQLAlchemy
+pymysql
+gunicorn

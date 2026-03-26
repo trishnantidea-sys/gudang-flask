@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Profil — D&L Ekspedisi{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 680px; margin: 40px auto; padding: 0 16px 40px;">
+
+    <!-- Link kembali -->
+    <a href="{{ url_for('dashboard') }}"
+       style="color: #888888; text-decoration: none; font-size: 14px;">
+        ← Kembali ke Dashboard
+    </a>
+
+    <h2 style="margin-top: 16px; margin-bottom: 20px;">Profil Saya</h2>
+
+    <!-- ============================
+         KARTU ATAS — Nama & Avatar
+         ============================ -->
+    <div style="background-color: #222222; border-radius: 6px;
+                padding: 20px; margin-bottom: 16px;">
+
+        <!-- Avatar (inisial nama) -->
+        <div style="width: 60px; height: 60px; background-color: #e84c1e;
+                    border-radius: 50%; display: inline-flex; align-items: center;
+                    justify-content: center; font-size: 26px; font-weight: bold;
+                    color: white; vertical-align: middle; margin-right: 16px;">
+            {{ user.nama[0] }}
+        </div>
+
+        <!-- Nama & username -->
+        <div style="display: inline-block; vertical-align: middle;">
+            <p style="margin: 0; font-size: 18px; font-weight: bold; color: white;">
+                {{ user.nama }}
+            </p>
+            <p style="margin: 4px 0 0; font-size: 13px; color: #aaaaaa;">
+                @{{ user.username }}
+            </p>
+        </div>
+
+        <!-- Hobi sebagai tag -->
+        <div style="margin-top: 14px;">
+            {% if user.hobi %}
+                {% for h in user.hobi.split(',') %}
+                <span style="display: inline-block; background-color: #444444;
+                             color: #dddddd; padding: 3px 10px; border-radius: 20px;
+                             font-size: 12px; margin: 2px;">
+                    {{ h.strip() }}
+                </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- ============================
+         KARTU INFORMASI PRIBADI
+         ============================ -->
+    <div style="background-color: white; border: 1px solid #cccccc;
+                border-radius: 6px; padding: 20px; margin-bottom: 16px;">
+
+        <h3 style="margin-top: 0; margin-bottom: 14px; font-size: 13px;
+                   color: #e84c1e; text-transform: uppercase; letter-spacing: 1px;
+                   padding-bottom: 8px; border-bottom: 2px solid #e84c1e;">
+            Informasi Pribadi
+        </h3>
+
+        <!-- Baris info pakai tabel sederhana -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tr style="border-bottom: 1px solid #eeeeee;">
+                <td style="padding: 9px 0; color: #888888; width: 150px;">Email</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.email }}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eeeeee;">
+                <td style="padding: 9px 0; color: #888888;">Jenis Kelamin</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.gender }}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eeeeee;">
+                <td style="padding: 9px 0; color: #888888;">Usia</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.usia }} tahun</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eeeeee;">
+                <td style="padding: 9px 0; color: #888888;">Pekerjaan</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.pekerjaan }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 9px 0; color: #888888;">No. HP</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.nohp }}</td>
+            </tr>
+        </table>
+
+    </div>
+
+    <!-- ============================
+         KARTU ALAMAT
+         ============================ -->
+    <div style="background-color: white; border: 1px solid #cccccc;
+                border-radius: 6px; padding: 20px;">
+
+        <h3 style="margin-top: 0; margin-bottom: 14px; font-size: 13px;
+                   color: #e84c1e; text-transform: uppercase; letter-spacing: 1px;
+                   padding-bottom: 8px; border-bottom: 2px solid #e84c1e;">
+            Alamat
+        </h3>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tr style="border-bottom: 1px solid #eeeeee;">
+                <td style="padding: 9px 0; color: #888888; width: 150px;">Kota</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.kota }}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eeeeee;">
+                <td style="padding: 9px 0; color: #888888;">RT / RW</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.rt }} / {{ user.rw }}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eeeeee;">
+                <td style="padding: 9px 0; color: #888888;">Zip Code</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.zipcode }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 9px 0; color: #888888;">Koordinat</td>
+                <td style="padding: 9px 0; font-weight: 500;">{{ user.lat }}, {{ user.longitude }}</td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

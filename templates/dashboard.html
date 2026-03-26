@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — D&L Ekspedisi{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 0 auto; padding: 24px 16px;">
+
+    <!-- ============================
+         JUDUL
+         ============================ -->
+    <div style="margin-bottom: 20px;">
+        <h2 style="margin: 0 0 4px;">Manajemen Paket</h2>
+        <p style="margin: 0; color: #888888; font-size: 14px;">
+            Halo, {{ session.nama }} 👋
+        </p>
+    </div>
+
+    <!-- ============================
+         STATS
+         ============================ -->
+    <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+
+        <div style="background-color: white; border: 1px solid #cccccc;
+                    border-radius: 6px; padding: 16px 20px; flex: 1; min-width: 130px;">
+            <p style="margin: 0 0 4px; font-size: 12px; color: #888888; text-transform: uppercase;">Total Paket</p>
+            <p style="margin: 0; font-size: 28px; font-weight: bold;">{{ pakets|length }}</p>
+        </div>
+
+        <div style="background-color: white; border: 1px solid #cccccc;
+                    border-radius: 6px; padding: 16px 20px; flex: 1; min-width: 130px;">
+            <p style="margin: 0 0 4px; font-size: 12px; color: #888888; text-transform: uppercase;">Paket Kilat</p>
+            <p style="margin: 0; font-size: 28px; font-weight: bold;">{{ jml_kilat }}</p>
+        </div>
+
+        <div style="background-color: white; border: 1px solid #cccccc;
+                    border-radius: 6px; padding: 16px 20px; flex: 1; min-width: 130px;">
+            <p style="margin: 0 0 4px; font-size: 12px; color: #888888; text-transform: uppercase;">Paket Reguler</p>
+            <p style="margin: 0; font-size: 28px; font-weight: bold;">{{ jml_reguler }}</p>
+        </div>
+
+        <div style="background-color: white; border: 1px solid #cccccc;
+                    border-radius: 6px; padding: 16px 20px; flex: 1; min-width: 130px;">
+            <p style="margin: 0 0 4px; font-size: 12px; color: #888888; text-transform: uppercase;">Paket Ekonomis</p>
+            <p style="margin: 0; font-size: 28px; font-weight: bold;">{{ jml_ekonomis }}</p>
+        </div>
+
+        <div style="background-color: white; border: 1px solid #cccccc;
+                    border-radius: 6px; padding: 16px 20px; flex: 1; min-width: 130px;">
+            <p style="margin: 0 0 4px; font-size: 12px; color: #888888; text-transform: uppercase;">Paket Kargo</p>
+            <p style="margin: 0; font-size: 28px; font-weight: bold;">{{ jml_cargo }}</p>
+        </div>
+
+    </div>
+
+    <!-- ============================
+         TOMBOL BUKA FORM TAMBAH
+         ============================ -->
+    <div style="margin-bottom: 16px;">
+        <button onclick="
+                    var f = document.getElementById('form-tambah');
+                    f.style.display = (f.style.display === 'none') ? 'block' : 'none';"
+                style="padding: 9px 20px; background-color: #e84c1e; color: white;
+                       border: none; border-radius: 4px; font-size: 14px;
+                       font-weight: bold; cursor: pointer;">
+            + Tambah Paket
+        </button>
+    </div>
+
+    <!-- ============================
+         FORM TAMBAH PAKET (tersembunyi)
+         ============================ -->
+    <div id="form-tambah" style="display: none; background-color: white;
+                                  border: 1px solid #cccccc; border-radius: 6px;
+                                  padding: 20px; margin-bottom: 20px;">
+
+        <h3 style="margin-top: 0; margin-bottom: 16px;">Tambah Paket Baru</h3>
+
+        <!-- [PERUBAHAN] action diubah dari tambah_paket_route menjadi tambah_paket
+             karena nama fungsi di app.py adalah tambah_paket -->
+        <form method="POST" action="{{ url_for('tambah_paket') }}">
+
+            <!-- Resi & Tanggal -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">
+                        Nomor Resi * (EXP + 3 angka)
+                    </label>
+                    <input type="text" name="resi" placeholder="EXP004"
+                           maxlength="6" required
+                           style="width: 100%; padding: 8px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box; text-transform: uppercase;">
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">
+                        Tanggal Pengiriman * (DD-MM-YYYY)
+                    </label>
+                    <input type="text" name="tanggal_pengiriman"
+                           placeholder="07-03-2026" required
+                           style="width: 100%; padding: 8px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Pengirim -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Nama Pengirim *</label>
+                    <input type="text" name="pengirim" required
+                           style="width: 100%; padding: 8px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">No. HP Pengirim</label>
+                    <input type="text" name="no_hp_pengirim"
+                           style="width: 100%; padding: 8px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Penerima -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Nama Penerima *</label>
+                    <input type="text" name="penerima" required
+                           style="width: 100%; padding: 8px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">No. HP Penerima</label>
+                    <input type="text" name="no_hp_penerima"
+                           style="width: 100%; padding: 8px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Alamat -->
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Alamat Tujuan *</label>
+                <input type="text" name="alamat_tujuan" required
+                       style="width: 100%; padding: 8px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+            </div>
+
+            <!-- Kategori & Berat -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Kategori *</label>
+                    <select name="kategori" required
+                            style="width: 100%; padding: 8px; font-size: 14px;
+                                   border: 1px solid #cccccc; border-radius: 4px;
+                                   box-sizing: border-box;">
+                        {% for k in kategori_list %}
+                        <option value="{{ k }}">{{ k }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Berat (kg) *</label>
+                    <input type="number" name="berat" step="0.1" min="0.1"
+                           placeholder="1.5" required
+                           style="width: 100%; padding: 8px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Jenis Pengiriman -->
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Jenis Pengiriman *</label>
+                <select name="jenis_pengiriman" required
+                        style="width: 100%; padding: 8px; font-size: 14px;
+                               border: 1px solid #cccccc; border-radius: 4px;
+                               box-sizing: border-box;">
+                    {% for j in jenis_list %}
+                    <option value="{{ j }}">{{ j }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Tombol -->
+            <button type="submit"
+                    style="padding: 9px 22px; background-color: #e84c1e; color: white;
+                           border: none; border-radius: 4px; font-size: 14px;
+                           font-weight: bold; cursor: pointer; margin-right: 8px;">
+                Simpan Paket
+            </button>
+            <button type="button"
+                    onclick="document.getElementById('form-tambah').style.display='none';"
+                    style="padding: 9px 22px; background-color: white; color: #333333;
+                           border: 1px solid #cccccc; border-radius: 4px;
+                           font-size: 14px; cursor: pointer;">
+                Batal
+            </button>
+
+        </form>
+    </div>
+
+    <!-- ============================
+         FORM FILTER / SEARCH
+         ============================ -->
+    <form method="GET" action="{{ url_for('dashboard') }}"
+          style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+
+        <input type="text" name="search" value="{{ search }}"
+               placeholder="🔍 Cari resi, pengirim, penerima..."
+               style="flex: 1; min-width: 180px; padding: 8px 10px;
+                      font-size: 14px; border: 1px solid #cccccc; border-radius: 4px;">
+
+        <select name="kategori"
+                style="padding: 8px; font-size: 14px;
+                       border: 1px solid #cccccc; border-radius: 4px;">
+            <option value="">Semua Kategori</option>
+            {% for k in kategori_list %}
+            <option value="{{ k }}" {% if kategori_filter==k %}selected{% endif %}>{{ k }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="jenis"
+                style="padding: 8px; font-size: 14px;
+                       border: 1px solid #cccccc; border-radius: 4px;">
+            <option value="">Semua Jenis</option>
+            {% for j in jenis_list %}
+            <option value="{{ j }}" {% if jenis_filter==j %}selected{% endif %}>{{ j }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit"
+                style="padding: 8px 16px; background-color: #333333; color: white;
+                       border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">
+            Filter
+        </button>
+        <a href="{{ url_for('dashboard') }}"
+           style="padding: 8px 16px; background-color: white; color: #333333;
+                  border: 1px solid #cccccc; border-radius: 4px;
+                  font-size: 14px; text-decoration: none;">
+            Reset
+        </a>
+
+    </form>
+
+    <!-- ============================
+         TABEL PAKET
+         ============================ -->
+    <div style="background-color: white; border: 1px solid #cccccc;
+                border-radius: 6px; overflow-x: auto;">
+
+        {% if pakets %}
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+
+            <thead>
+                <tr style="background-color: #f8f8f8; border-bottom: 2px solid #cccccc;">
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Resi</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Pengirim</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Penerima</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Alamat</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Kategori</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Berat</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Jenis</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Tgl Kirim</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Tarif</th>
+                    <th style="text-align: left; padding: 10px 12px; color: #888888; font-size: 11px; text-transform: uppercase;">Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for p in pakets %}
+            <tr style="border-bottom: 1px solid #eeeeee;">
+                <td style="padding: 10px 12px; font-weight: bold;">{{ p.resi }}</td>
+                <td style="padding: 10px 12px;">
+                    {{ p.pengirim }}<br>
+                    <span style="color: #aaaaaa; font-size: 11px;">{{ p.no_hp_pengirim }}</span>
+                </td>
+                <td style="padding: 10px 12px;">
+                    {{ p.penerima }}<br>
+                    <span style="color: #aaaaaa; font-size: 11px;">{{ p.no_hp_penerima }}</span>
+                </td>
+                <td style="padding: 10px 12px; max-width: 140px;
+                           white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    {{ p.alamat_tujuan }}
+                </td>
+                <td style="padding: 10px 12px;">{{ p.kategori }}</td>
+                <td style="padding: 10px 12px;">{{ p.berat }} kg</td>
+                <td style="padding: 10px 12px;">
+                    {{ p.jenis_pengiriman }}<br>
+                    <span style="color: #aaaaaa; font-size: 11px;">{{ p.estimasi }}</span>
+                </td>
+                <td style="padding: 10px 12px;">{{ p.tanggal_pengiriman }}</td>
+                <td style="padding: 10px 12px; font-weight: bold; color: #28a745;">
+                    Rp {{ "{:,.0f}".format(p.tarif) }}
+                </td>
+                <td style="padding: 10px 12px;">
+                    <!-- Tombol Edit -->
+                    <a href="{{ url_for('edit_paket', id=p.id) }}"
+                       style="display: inline-block; padding: 4px 10px; font-size: 12px;
+                              background-color: white; border: 1px solid #cccccc;
+                              border-radius: 4px; text-decoration: none; color: #333333;
+                              margin-right: 4px;">
+                        Edit
+                    </a>
+                    <!-- [PERUBAHAN] Tombol Hapus menggunakan form POST bukan GET
+                         Lebih aman: operasi delete seharusnya tidak bisa dipanggil via URL langsung -->
+                    <form method="POST" action="{{ url_for('hapus_paket_route', id=p.id) }}"
+                          style="display: inline;"
+                          onsubmit="return confirm('Hapus paket {{ p.resi }}?')">
+                        <button type="submit"
+                                style="padding: 4px 10px; font-size: 12px; cursor: pointer;
+                                       background-color: #f8d7da; color: #721c24;
+                                       border: 1px solid #f5c6c1; border-radius: 4px;">
+                            Hapus
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+
+        {% else %}
+        <div style="text-align: center; padding: 48px; color: #888888;">
+            <p style="font-size: 32px; margin: 0;">📭</p>
+            <p style="margin: 8px 0 0;">Tidak ada data paket ditemukan.</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

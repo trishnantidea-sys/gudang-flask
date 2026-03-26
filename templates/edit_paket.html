@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Edit Paket {{ paket.resi }} — D&L Ekspedisi{% endblock %}
+
+{% block content %}
+<div style="max-width: 580px; margin: 40px auto; padding: 0 16px 40px;">
+
+    <!-- Link kembali -->
+    <a href="{{ url_for('dashboard') }}"
+       style="color: #888888; text-decoration: none; font-size: 14px;">
+        ← Kembali ke Dashboard
+    </a>
+
+    <h2 style="margin-top: 16px; margin-bottom: 4px;">Edit Paket</h2>
+    <p style="margin-top: 0; margin-bottom: 20px; color: #888888; font-size: 14px;">
+        Resi: <strong>{{ paket.resi }}</strong>
+    </p>
+
+    <!-- Form edit -->
+    <div style="background-color: white; border: 1px solid #cccccc;
+                border-radius: 6px; padding: 24px;">
+
+        <form method="POST" action="{{ url_for('edit_paket', id=paket.id) }}">
+
+            <!-- Pengirim -->
+            <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Nama Pengirim
+                    </label>
+                    <input type="text" name="pengirim" value="{{ paket.pengirim }}" required
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        No. HP Pengirim
+                    </label>
+                    <input type="text" name="no_hp_pengirim" value="{{ paket.no_hp_pengirim }}"
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Penerima -->
+            <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Nama Penerima
+                    </label>
+                    <input type="text" name="penerima" value="{{ paket.penerima }}" required
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        No. HP Penerima
+                    </label>
+                    <input type="text" name="no_hp_penerima" value="{{ paket.no_hp_penerima }}"
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Alamat -->
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                    Alamat Tujuan
+                </label>
+                <input type="text" name="alamat_tujuan" value="{{ paket.alamat_tujuan }}" required
+                       style="width: 100%; padding: 9px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+            </div>
+
+            <!-- Kategori & Berat -->
+            <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Kategori
+                    </label>
+                    <select name="kategori"
+                            style="width: 100%; padding: 9px; font-size: 14px;
+                                   border: 1px solid #cccccc; border-radius: 4px;
+                                   box-sizing: border-box;">
+                        {% for k in kategori_list %}
+                        <option value="{{ k }}" {% if paket.kategori==k %}selected{% endif %}>{{ k }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Berat (kg)
+                    </label>
+                    <input type="number" name="berat" step="0.1" min="0.1"
+                           value="{{ paket.berat }}" required
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Tanggal & Jenis -->
+            <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Tanggal Pengiriman (DD-MM-YYYY)
+                    </label>
+                    <input type="text" name="tanggal_pengiriman"
+                           value="{{ paket.tanggal_pengiriman }}" required
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Jenis Pengiriman
+                    </label>
+                    <select name="jenis_pengiriman"
+                            style="width: 100%; padding: 9px; font-size: 14px;
+                                   border: 1px solid #cccccc; border-radius: 4px;
+                                   box-sizing: border-box;">
+                        {% for j in jenis_list %}
+                        <option value="{{ j }}" {% if paket.jenis_pengiriman==j %}selected{% endif %}>{{ j }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tombol -->
+            <button type="submit"
+                    style="padding: 10px 24px; background-color: #e84c1e; color: white;
+                           border: none; border-radius: 4px; font-size: 14px;
+                           font-weight: bold; cursor: pointer; margin-right: 8px;">
+                Simpan Perubahan
+            </button>
+            <a href="{{ url_for('dashboard') }}"
+               style="padding: 10px 24px; background-color: white; color: #333333;
+                      border: 1px solid #cccccc; border-radius: 4px;
+                      font-size: 14px; text-decoration: none;">
+                Batal
+            </a>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

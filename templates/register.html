@@ -1,58 +1,329 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>D&L Express — Register</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{--bg:#0a0a0f;--surface:#12121a;--card:#1a1a26;--border:#2a2a3a;--accent:#f5a623;--accent2:#e84545;--text:#e8e8f0;--muted:#6a6a8a;--green:#2ecc71;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
-  .box{width:600px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;}
-  .logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;color:var(--accent);margin-bottom:4px;}
-  .sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
-  .section-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted);margin:24px 0 12px;border-bottom:1px solid var(--border);padding-bottom:8px;}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .form-group{display:flex;flex-direction:column;gap:5px;}
-  .form-group.full{grid-column:1/-1;}
-  label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;}
-  input,select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s;width:100%;}
-  input:focus,select:focus{border-color:var(--accent);}
-  select option{background:var(--card);}
-  .btn-register{width:100%;padding:12px;background:var(--accent);color:#0a0a0f;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;cursor:pointer;margin-top:24px;transition:all .2s;}
-  .btn-register:hover{background:#ffc04d;transform:translateY(-1px);}
-  .link{margin-top:16px;font-size:12px;color:var(--muted);text-align:center;}
-  .link a{color:var(--accent);text-decoration:none;}
-  .flash{padding:10px 16px;border-radius:8px;margin-bottom:16px;font-size:12px;}
-  .flash.error{background:rgba(232,69,69,.1);border:1px solid var(--accent2);color:var(--accent2);}
-</style>
-</head>
-<body>
-<div class="box">
-  <div class="logo">D&L Express</div>
-  <div class="sub">Buat Akun Baru</div>
+{% extends "base.html" %}
+{% block title %}Register — D&L Ekspedisi{% endblock %}
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for category, message in messages %}
-      <div class="flash {{ category }}">{{ message }}</div>
-    {% endfor %}
-  {% endwith %}
+{% block content %}
 
-  <form method="POST">
-    <div class="section-title">Akun</div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>User ID</label>
-        <input type="text" name="userid" placeholder="min. 6 karakter, huruf+angka" required>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" name="password" placeholder="Huruf besar+kecil+angka+simbol" required>
-      </div>
-      <div class="form-group full">
-        <label>Email</label>
-        <input type="email" name="email" placeholder="contoh@email.com" required>
-      </div>
-    </div>
+<div style="width: 580px; margin: 40px auto; padding-bottom: 40px;">
 
-    
+    <h2 style="margin-bottom: 4px;">Daftar Akun Baru</h2>
+    <p style="color: #888888; margin-top: 0; margin-bottom: 24px; font-size: 14px;">
+        Isi semua data di bawah ini untuk mendaftar
+    </p>
+
+    <form method="POST" action="{{ url_for('register') }}">
+
+        <!-- ==============================
+             BAGIAN 1 — INFORMASI AKUN
+             ============================== -->
+        <div style="background-color: white; border: 1px solid #cccccc;
+                    border-radius: 6px; padding: 20px; margin-bottom: 16px;">
+
+            <h3 style="margin-top: 0; margin-bottom: 16px; color: #e84c1e;
+                       font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+                       padding-bottom: 8px; border-bottom: 2px solid #e84c1e;">
+                1. Informasi Akun
+            </h3>
+
+            <!-- Username -->
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                    Username *
+                </label>
+                <input type="text" name="username"
+                       value="{{ form_data.get('username','') }}"
+                       placeholder="6-20 karakter, kombinasi huruf dan angka"
+                       required
+                       style="width: 100%; padding: 9px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+                {% if error.get('username') %}
+                <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">
+                    ⚠️ {{ error.username }}
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                    Password *
+                </label>
+                <input type="password" name="password"
+                       placeholder="Min. 8 karakter, huruf besar+kecil+angka+simbol"
+                       required
+                       style="width: 100%; padding: 9px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+                {% if error.get('password') %}
+                <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">
+                    ⚠️ {{ error.password }}
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
+            <div style="margin-bottom: 0;">
+                <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                    Email *
+                </label>
+                <input type="text" name="email"
+                       value="{{ form_data.get('email','') }}"
+                       placeholder="contoh@email.com"
+                       required
+                       style="width: 100%; padding: 9px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+                {% if error.get('email') %}
+                <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">
+                    ⚠️ {{ error.email }}
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- ==============================
+             BAGIAN 2 — PROFIL
+             ============================== -->
+        <div style="background-color: white; border: 1px solid #cccccc;
+                    border-radius: 6px; padding: 20px; margin-bottom: 16px;">
+
+            <h3 style="margin-top: 0; margin-bottom: 16px; color: #e84c1e;
+                       font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+                       padding-bottom: 8px; border-bottom: 2px solid #e84c1e;">
+                2. Profil
+            </h3>
+
+            <!-- Nama -->
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                    Nama Lengkap *
+                </label>
+                <input type="text" name="nama"
+                       value="{{ form_data.get('nama','') }}"
+                       placeholder="Nama lengkap (hanya huruf)"
+                       required
+                       style="width: 100%; padding: 9px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+                {% if error.get('nama') %}
+                <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">
+                    ⚠️ {{ error.nama }}
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Gender & Usia (2 kolom) -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                <div style="flex: 1;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Jenis Kelamin *
+                    </label>
+                    <select name="gender" required
+                            style="width: 100%; padding: 9px; font-size: 14px;
+                                   border: 1px solid #cccccc; border-radius: 4px;
+                                   box-sizing: border-box;">
+                        <option value="">-- Pilih --</option>
+                        <option value="Male"   {% if form_data.get('gender')=='Male'   %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if form_data.get('gender')=='Female' %}selected{% endif %}>Female</option>
+                    </select>
+                    {% if error.get('gender') %}
+                    <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">⚠️ {{ error.gender }}</p>
+                    {% endif %}
+                </div>
+                <div style="flex: 1;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Usia * (17–80)
+                    </label>
+                    <input type="number" name="usia"
+                           value="{{ form_data.get('usia','') }}"
+                           placeholder="Contoh: 22" min="17" max="80" required
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                    {% if error.get('usia') %}
+                    <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">⚠️ {{ error.usia }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Pekerjaan -->
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                    Pekerjaan *
+                </label>
+                <input type="text" name="pekerjaan"
+                       value="{{ form_data.get('pekerjaan','') }}"
+                       placeholder="Contoh: Staff Gudang"
+                       required
+                       style="width: 100%; padding: 9px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+                {% if error.get('pekerjaan') %}
+                <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">
+                    ⚠️ {{ error.pekerjaan }}
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Hobi -->
+            <div style="margin-bottom: 0;">
+                <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                    Hobi * (minimal 3, pisahkan dengan koma)
+                </label>
+                <input type="text" name="hobi"
+                       value="{{ form_data.get('hobi','') }}"
+                       placeholder="Contoh: Membaca, Olahraga, Memasak"
+                       required
+                       style="width: 100%; padding: 9px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+                {% if error.get('hobi') %}
+                <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">
+                    ⚠️ {{ error.hobi }}
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- ==============================
+             BAGIAN 3 — ALAMAT
+             ============================== -->
+        <div style="background-color: white; border: 1px solid #cccccc;
+                    border-radius: 6px; padding: 20px; margin-bottom: 20px;">
+
+            <h3 style="margin-top: 0; margin-bottom: 16px; color: #e84c1e;
+                       font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+                       padding-bottom: 8px; border-bottom: 2px solid #e84c1e;">
+                3. Alamat
+            </h3>
+
+            <!-- Kota & Zipcode -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                <div style="flex: 1;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Nama Kota *
+                    </label>
+                    <input type="text" name="kota"
+                           value="{{ form_data.get('kota','') }}"
+                           placeholder="Contoh: Bandung" required
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                    {% if error.get('kota') %}
+                    <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">⚠️ {{ error.kota }}</p>
+                    {% endif %}
+                </div>
+                <div style="flex: 1;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                        Zip Code * (5 digit)
+                    </label>
+                    <input type="text" name="zipcode"
+                           value="{{ form_data.get('zipcode','') }}"
+                           placeholder="Contoh: 40123" maxlength="5" required
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                    {% if error.get('zipcode') %}
+                    <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">⚠️ {{ error.zipcode }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- RT & RW -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                <div style="flex: 1;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">RT</label>
+                    <input type="number" name="rt" value="{{ form_data.get('rt','') }}"
+                           placeholder="Contoh: 5"
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                    {% if error.get('rt') %}
+                    <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">⚠️ {{ error.rt }}</p>
+                    {% endif %}
+                </div>
+                <div style="flex: 1;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">RW</label>
+                    <input type="number" name="rw" value="{{ form_data.get('rw','') }}"
+                           placeholder="Contoh: 10"
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                    {% if error.get('rw') %}
+                    <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">⚠️ {{ error.rw }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Lat & Longitude -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                <div style="flex: 1;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">Latitude</label>
+                    <input type="text" name="lat" value="{{ form_data.get('lat','') }}"
+                           placeholder="Contoh: -6.9175"
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                    {% if error.get('lat') %}
+                    <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">⚠️ {{ error.lat }}</p>
+                    {% endif %}
+                </div>
+                <div style="flex: 1;">
+                    <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">Longitude</label>
+                    <input type="text" name="longitude" value="{{ form_data.get('longitude','') }}"
+                           placeholder="Contoh: 107.6191"
+                           style="width: 100%; padding: 9px; font-size: 14px;
+                                  border: 1px solid #cccccc; border-radius: 4px;
+                                  box-sizing: border-box;">
+                    {% if error.get('longitude') %}
+                    <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">⚠️ {{ error.longitude }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- No HP -->
+            <div style="margin-bottom: 0;">
+                <label style="display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+                    No. HP * (11–13 digit)
+                </label>
+                <input type="text" name="nohp"
+                       value="{{ form_data.get('nohp','') }}"
+                       placeholder="Contoh: 081234567890"
+                       required
+                       style="width: 100%; padding: 9px; font-size: 14px;
+                              border: 1px solid #cccccc; border-radius: 4px;
+                              box-sizing: border-box;">
+                {% if error.get('nohp') %}
+                <p style="color: #dc3545; font-size: 13px; margin: 4px 0 0;">
+                    ⚠️ {{ error.nohp }}
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- Tombol daftar -->
+        <button type="submit"
+                style="width: 100%; padding: 13px;
+                       background-color: #e84c1e; color: white;
+                       border: none; border-radius: 4px;
+                       font-size: 15px; font-weight: bold; cursor: pointer;">
+            Daftar Sekarang
+        </button>
+
+    </form>
+
+    <!-- Link ke login -->
+    <p style="text-align: center; margin-top: 16px; font-size: 14px; color: #888888;">
+        Sudah punya akun?
+        <a href="{{ url_for('login') }}"
+           style="color: #e84c1e; font-weight: bold; text-decoration: none;">
+            Login di sini
+        </a>
+    </p>
+
+</div>
+
+{% endblock %}

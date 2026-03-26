@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Login — D&L Ekspedisi{% endblock %}
+
+{% block content %}
+
+<!-- Kotak login di tengah halaman -->
+<div style="width: 360px; margin: 60px auto;
+            background-color: white; padding: 30px;
+            border: 1px solid #cccccc; border-radius: 6px;">
+
+    <h2 style="text-align: center; margin-top: 0; margin-bottom: 6px;">Login</h2>
+    <p style="text-align: center; color: #888888; margin-top: 0; margin-bottom: 24px; font-size: 14px;">
+        Masukkan Username dan Password Anda
+    </p>
+
+    <!-- Pesan error login -->
+    {% if error %}
+    <div style="background-color: #f8d7da; color: #721c24;
+                padding: 10px; border-radius: 4px;
+                margin-bottom: 16px; font-size: 14px;">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Form login -->
+    <form method="POST" action="{{ url_for('login') }}">
+
+        <!-- Username -->
+        <div style="margin-bottom: 14px;">
+            <label style="display: block; font-weight: bold;
+                          margin-bottom: 6px; font-size: 14px;">
+                Username
+            </label>
+            <input type="text" name="username"
+                   placeholder="Contoh: admin123"
+                   required
+                   style="width: 100%; padding: 9px; font-size: 14px;
+                          border: 1px solid #cccccc; border-radius: 4px;
+                          box-sizing: border-box;">
+        </div>
+
+        <!-- Password -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold;
+                          margin-bottom: 6px; font-size: 14px;">
+                Password
+            </label>
+            <input type="password" name="password"
+                   placeholder="••••••••"
+                   required
+                   style="width: 100%; padding: 9px; font-size: 14px;
+                          border: 1px solid #cccccc; border-radius: 4px;
+                          box-sizing: border-box;">
+        </div>
+
+        <!-- Tombol login -->
+        <button type="submit"
+                style="width: 100%; padding: 11px;
+                       background-color: #e84c1e; color: white;
+                       border: none; border-radius: 4px;
+                       font-size: 15px; font-weight: bold; cursor: pointer;">
+            Masuk
+        </button>
+
+    </form>
+
+    <!-- Link ke register -->
+    <p style="text-align: center; margin-top: 18px; font-size: 14px; color: #888888;">
+        Belum punya akun?
+        <a href="{{ url_for('register') }}"
+           style="color: #e84c1e; font-weight: bold; text-decoration: none;">
+            Daftar Sekarang
+        </a>
+    </p>
+
+    <!-- Info akun demo -->
+    <p style="text-align: center; font-size: 12px; color: #aaaaaa; margin-top: 8px;">
+        Demo: <strong>admin123</strong> / <strong>Admin@123</strong>
+    </p>
+
+</div>
+
+{% endblock %}
